@@ -1,0 +1,29 @@
+- .decorate เป็นการทำให้ property เป็น public โดย Route ต่างๆสามารถใช้ร่วมกันได้ ข้อมูลของ property จะถูกเก็บไว้ใน memory ของ server; 
+    usecase ที่ใช้ส่วนใหญ่จะเป็น case ที่เกี่ยวกับการต้องใช้ data หรือ method ซ้ำๆ เช่น Loging/Monitoring, Auth
+    มันเหมือนกับการประกาศวันฟังก์ชั่นหรือตัวแปลไว้บน global แล้วเรียกใช้ แต่ Lifecycle management ดีกว่า, code เข้าใจง่ายกว่า เพราะสามารถยัดและแยกใช้แต่ละ app ได้ ทำให้สามารถมอง app 1 แอปเป็นก้อนเดียวได้ชัด 
+    ต่างจากประกาศตัวแปรที่ app อื่นๆอาจต้องใช้ตัวแปร global ร่วมกันซึ่งอาจที่ให้เกิดการสับสนและไม่เกิดการแบ่ง app ที่ชัดเจนมาก เหมาะกับ Projects ที่ต้องการ maintainability สูง
+- constructor เหมือนกับ __init__ ใน python
+- ?? (Nullish Coalescing) จะ return ค่าด้านขวาเมื่อด้านซ้ายเป็น null หรือ undefined
+- splice(start index:int, จน.ครั้งที่ลบออกหลังจาก start:int, ตัวที่จะเอาเข้ามาแรกหลังจากลบเสร็จ:any)
+- put สำหรับอัปเดตข้อมูลทั้งหมดตาม format ที่ server กำหนดไว้
+- patch สำหรับอัปเดตข้อมูลบางส่วนของ format ที่ server กำหนดไว้
+- post สำหรับสร้าง/ส่งข้อมูลใหม่
+- การตั้ง HTTP request method ตามแบบมาตรฐานของ RESTful API มีข้อดีหลายประการเช่น เข้าใจและสื่อสารได้ง่าย, ช่วยเพิ่ม performance ได้ตรงตาม method ที่ server optimize มาแล้ว
+    , และยังช่วยให้แยก role ของ client ได้ง่ายขึ้น
+- การ group route สามารถใช้ .group หรือ prefix ใน app ก็ได้
+- .guard() ใช้แล้วตัว route หลังต้องมี param ตามที่ set ไว้ใน guard ด้วย
+- onTransform(type of Lifecycle hook) is called after routing but before validation 
+    ทำให้สามารถ logging ได้เฉพาะ path ที่มีเข้ามาที่ route ที่เราได้กำหนดไว้แล้วเท่านั้น ถ้า path ไม่ตรงกับ route ที่ได้กำหนดไว้มันก็จะไม่ log
+    สามารถกำหนดให้อยู่ใน scope ของ plugin ที่มันอยู่หรือเป็น global ก็ได้ (ทุก route ใช้ hook นี้ได้หมด)
+- macro เป็นการสร้าง custom hook (คล้ายๆ function แต่ต่างอยู่) สามารถเลือกระดับการทำงานตาม Lifecycle ของ Elysia ได้ (หรือจะไม่เลือกก็ได้แต่มันก็จะทำงานทันทีเมื่อ server start)
+- onBeforeHandle(type of Lifecycle hook) event that execute after validation but before the main handler
+- Resolve เป็นเหมือนการเอา property ใหม่เข้าไปใน context และจะหายไปเมื่อ request execute
+- การกำหนด name ให้กับ App ถือเป็นการ Identify อย่างหนึ่งเพื่อไม่ให้เกิดการเรียกใช้ Instant นั้นซ้ำมักจะใช้กับสิ่งที่คงที่เช่นโครงสร้าง/พฤติกรรมต่างๆหรือฐานข้อมูล ใช้สิ่งนั้นแบบเดิมจนกว่าจะปิด server
+    แต่ถ้าไม่กำหนด name Instant ก็จะสามารถเรียกใช้ซ้ำได้มักใช้กับการ validate หรือการ resolve property ใหม่ทุกครั้งที่มี request
+- โดยปกติแล้ว Elysia จะ Encapsulate Lifecycle (ค่าที่อยู่ใน Lifecycle ของแต่ละ module จะไม่ถูกส่งออกไปด้านนอกเพื่อลดปัญหา side-effect) หรือว่าเก็บเป็น local นั่นแหละ
+    แต่เราสามารถ scope Lifecycle (การ cast) เหล่านี้ได้:
+        - Local(defualt): Lifecycle ต่างๆอยู่ใน module นั้นไม่ถูกส่งออกไปไหน
+        - Scoped: ค่าจาก Lifecycle ถูกส่งออกไปให้ Parent อันดับที่ 1 ใช้ได้เท่านั้น (หรือว่าใช้ .as('plugin') ทีเดียวเป็น multiple cast ก็ได้)
+        - Global: ค่าจาก Lifecycle ถูกส่งออกไปให้ Parent ทุกตัวใช้ได้
+- t.Omit() เป็นการสร้าง type ใหม่จากการตัดบางส่วนของ type เดิมออกไป
+- ใช้ Jaeger test ประสิทธิภาพ API ได้
